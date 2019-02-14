@@ -28,15 +28,15 @@ function draw() {
       state = 2;
     }
   }
-  else if (state === 2) {
+  else if (state === 2) { //on bottom, going left
     x -= 10;
-    if (x < 0 + rectSize) {
+    if (x < 0) {
       state = 3;
     }
   }
-  else if (state === 3) {
+  else if (state === 3) { //on left, going up
     y -= 10;
-    if (y < 0 + rectSize) {
+    if (y < 0) {
       state = 0;
     }
   }
