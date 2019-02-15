@@ -5,12 +5,6 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
-let squareArray = [];
-let ellipseArray = [];
-let triangleArray = [];
-let shapeSize;
-let shape = " ";
-
 function setup() {
   createCanvas(windowWidth, windowHeight);
   background(255);
@@ -32,11 +26,11 @@ function keyTyped() {
   }
   if (key === " "){
     background(255);
-    text("Mandy Fraser", 30,100);
+    text("Mandy Fraser", 30,100); //so it only erases the shapes, not the text
   }
 }
 
-function keyPressed() {
+function keyPressed() { //change colour
   if (keyCode === SHIFT) {
     fill(random(255),random(255),random(255));
     stroke(random(255),random(255),random(255));
