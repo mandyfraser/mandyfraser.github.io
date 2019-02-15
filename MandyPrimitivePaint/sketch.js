@@ -1,6 +1,6 @@
-// Project Title
-// Your Name
-// Date
+// Primitive Paint
+// Mandy Fraser
+// 2/15/2019
 //
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
@@ -17,41 +17,22 @@ function setup() {
   textFont("Georgia");
   textSize(width / 25);
   text("Mandy Fraser", 30,100);
-}
-
-function draw() {
-  background(255);
-  for (let i = 0; i < squareArray.length; i++){
-    rect(squareArray[i][0], squareArray[i][1], squareArray[i][2], squareArray[i][3]);
-  }
-  for (let i = 0; i < ellipseArray.length; i++){
-    ellipse(ellipseArray[i][0], ellipseArray[i][1], ellipseArray[i][2], ellipseArray[i][3]);
-  }
-  for (let i = 0; i < triangleArray.length; i++){
-    triangle(triangleArray[i][0], triangleArray[i][1], triangleArray[i][2], triangleArray[i][3]);
-  }
-  if (shape === "square"){
-    rect(mouseX,mouseY,100,60);
-  }
-  ellipse(mouseX,mouseY,100,100);
-  triangle(mouseX,mouseY,mouseX + 40,mouseY + 80, mouseX + 80, mouseY);
-  //keyTyped();
+  rectMode(CENTER);
 }
 
 function keyTyped() {
-  let cur = [mouseX, mouseY, shapeSize];
   if (key === "a") {
-    shape = "square";
-    squareArray.push(cur);
-    rect(mouseX,mouseY,100,60);
+    rect(mouseX,mouseY,random(300),random(300));
   } 
   if (key === "s") {
-    ellipseArray.push(cur);
-    ellipse(mouseX,mouseY,100,100);
+    ellipse(mouseX,mouseY,random(300),random(300));
   }
   if (key === "d") {
-    triangleArray.push(cur);
-    triangle(mouseX,mouseY,mouseX + 40,mouseY + 80, mouseX + 80, mouseY);
+    triangle(mouseX,mouseY,mouseX + random(100),mouseY + random(200), mouseX + random(200), mouseY);
+  }
+  if (key === " "){
+    background(255);
+    text("Mandy Fraser", 30,100);
   }
 }
 
