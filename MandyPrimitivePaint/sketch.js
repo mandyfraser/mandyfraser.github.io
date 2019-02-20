@@ -1,6 +1,6 @@
 // Primitive Paint
 // Mandy Fraser
-// 2/15/2019
+// 2/20/2019
 //
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
@@ -14,15 +14,20 @@ function setup() {
   rectMode(CENTER);
 }
 
-function keyTyped() {
+function draw() { //autonomous art
+  rect(random(windowWidth),random(windowHeight),random(50),random(50));
+  ellipse(random(windowWidth),random(windowHeight),random(50),random(50));
+}
+
+function keyTyped() { //user-added shapes
   if (key === "a") {
-    rect(mouseX,mouseY,random(300),random(300));
+    rect(mouseX,mouseY,200,120);
   } 
   if (key === "s") {
-    ellipse(mouseX,mouseY,random(300),random(300));
+    ellipse(mouseX,mouseY,200,200);
   }
   if (key === "d") {
-    triangle(mouseX,mouseY,mouseX + random(100),mouseY + random(200), mouseX + random(200), mouseY);
+    triangle(mouseX,mouseY,mouseX + 80,mouseY + 160, mouseX + 160, mouseY);
   }
   if (key === " "){
     background(255);
