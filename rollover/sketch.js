@@ -1,11 +1,12 @@
 // Rollover
 // Mandy Fraser
-// Date
+// 06/03/2019
 //
 // Extra for Experts:
-// - describe what you did to take this project "above and beyond"
+// I chose other colours for the fade and I implemented additional functionality when the mouse is clicked in the top left square and the bottom right square
 
 let quadrant = 0;
+
 let quad1R = 0;
 let quad1G = 0;
 let quad1B = 0;
@@ -18,6 +19,7 @@ let quad3B = 0;
 let quad4R = 0;
 let quad4G = 0;
 let quad4B = 0;
+
 let lightsOff;
 let lightSwitch = 0;
 
@@ -28,8 +30,7 @@ function setup() {
 function draw() {
   background(255);
   fill(255);
-  //find out where the mouse is
-  if (mouseX <= windowWidth/2 && mouseY <= windowHeight/2){
+  if (mouseX <= windowWidth/2 && mouseY <= windowHeight/2){                      //find out where the mouse is
     quadrant = 1;
   }
   else if (mouseX > windowWidth/2 && mouseY <= windowHeight/2){
@@ -42,25 +43,12 @@ function draw() {
     quadrant = 4;
   }
 
-  if (quadrant === 1 && lightsOff){
+  if (quadrant === 1 && lightsOff){    //if the top left square is clicked, all the squares become black until the mouse moves off the square
     background(0);
   }
-  
-  else if (quadrant === 4 && lightSwitch > 0){
-    quad4R = 0;
-    quad4G = 0;
-    quad4B = 0;
-  }
-
-  else if (quadrant === 4 && lightSwitch === false){
-    quad4R = 255;
-    quad4G = 255;
-    quad4B = 255;
-  }
-
   else{
     lightsOff = false;
-    if (quadrant === 1){
+    if (quadrant === 1){                                      //quadrant 1 (top left square)
 
       quad1R = 0;
       quad1G = 17;
@@ -76,7 +64,9 @@ function draw() {
     quad1B = constrain(quad1B,0,131);
     fill(quad1R,quad1G,quad1B);
     rect(0,0,windowWidth/2,windowHeight/2);
-    if (quadrant === 2){
+
+
+    if (quadrant === 2){                                       //quadrant 2 (top left square)
       quad2R = 0;
       quad2G = 17;
       quad2B = 64;
@@ -91,7 +81,9 @@ function draw() {
     quad2B = constrain(quad2B,0,131);
     fill(quad2R,quad2G,quad2B);
     rect(windowWidth/2,0,windowWidth/2,windowHeight/2);
-    if (quadrant === 3){
+
+
+    if (quadrant === 3){                                       //quadrant 3 (bottom left square)
       quad3R = 0;
       quad3G = 17;
       quad3B = 64;
@@ -106,7 +98,20 @@ function draw() {
     quad3B = constrain(quad3B,0,131);
     fill(quad3R,quad3G,quad3B);
     rect(0,windowHeight/2,windowWidth/2,windowHeight/2);
-    if (quadrant === 4){
+
+
+    if (quadrant === 4 && lightSwitch === 1){                   //quadrant 4 (bottom right square)
+      quad4R = 0;
+      quad4G = 0;
+      quad4B = 0;
+    }
+  
+    else if (quadrant === 4 && lightSwitch === 2){
+      quad4R = 255;
+      quad4G = 255;
+      quad4B = 255;
+    }
+    else if (quadrant === 4){
       quad4R = 0;
       quad4G = 17;
       quad4B = 64;
@@ -116,24 +121,32 @@ function draw() {
       quad4G += 2;
       quad4B += 2;
     }
-    quad4R = constrain(quad4R,0,90); //was 255 instead of random, worked fine
-    quad4G = constrain(quad4G,0,101);
-    quad4B = constrain(quad4B,0,131);
+    if (lightSwitch === 2){
+      quad4R = constrain(quad4R,0,255);
+      quad4G = constrain(quad4G,0,255);
+      quad4B = constrain(quad4B,0,255);
+    }
+    else{
+      quad4R = constrain(quad4R,0,90);
+      quad4G = constrain(quad4G,0,101);
+      quad4B = constrain(quad4B,0,131);
+    }
     fill(quad4R,quad4G,quad4B);
     rect(windowWidth/2,windowHeight/2,windowWidth/2,windowHeight/2);
   }
 }
 
-function mousePressed(){
+
+function mousePressed(){   //extra for experts functionality
   if (quadrant === 1){
     lightsOff = true;
   }
-  else if (quadrant === 4){
+  else if (quadrant === 4){                 //0 = off, 1 = black, 2 = white
     if (lightSwitch < 2){
       lightSwitch += 1;
     }
     else if (lightSwitch === 2){
-      lightSwitch -= 1;
+      lightSwitch = 0;
     }
   }
 }
