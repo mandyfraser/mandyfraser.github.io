@@ -43,7 +43,7 @@ function draw() {
     quadrant = 4;
   }
 
-  if (quadrant === 1 && lightsOff){    //if the top left square is clicked, all the squares become black until the mouse moves off the square
+  if (quadrant === 1 && lightsOff){                              //if the top left square is clicked, all the squares become black until the mouse moves off the square
     background(0);
   }
   else{
@@ -66,7 +66,7 @@ function draw() {
     rect(0,0,windowWidth/2,windowHeight/2);
 
 
-    if (quadrant === 2){                                       //quadrant 2 (top left square)
+    if (quadrant === 2){                                       //quadrant 2 (top right square)
       quad2R = 0;
       quad2G = 17;
       quad2B = 64;
