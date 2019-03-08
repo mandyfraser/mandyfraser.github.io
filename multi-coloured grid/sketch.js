@@ -5,53 +5,68 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
-let z = 0;
-let mouseClick = 0;
-let previousMouseClick = 0;
+let runSquares = true;
+let mouseClick = 1;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
 }
 
 function draw() {
-  background(255);
-  mouseClicked();
-  let squareSize = width/26;
-  if (mouseClick > previousMouseClick){
-    squareSize += 5;
+  if(mouseClicked()){
+    runSquares = true;
   }
-  else if (mouseClick < previousMouseClick){
+  if (runSquares){
+    squares();
+  }
+  // let squareSize = width/26;
+  // if (mouseClick === 2){
+  //   squareSize += 5;
+  //   mouseClick = 1;
+  // }
+  // else if (mouseClick === 0){
+  //   squareSize -= 5;
+  //   mouseClick = 1;
+  // for (let x = 0; x <= width; x += squareSize){
+  //   for (let y = 0; y <= height; y += squareSize){
+  //     chooseColours();
+  //     rect(x,y,squareSize,squareSize);
+  //   }
+  // }
+  print(mouseClick);
+}
+
+function mousePressed(){
+  if (mouseButton === RIGHT){
+    mouseClick = 2;
+  }
+  else if (mouseButton === LEFT){
+    mouseClick = 0;
+  }
+}
+
+function squares(){
+  let squareSize = width/26;
+  if (mouseClick === 2){
+    squareSize += 5;
+    mouseClick = 1;
+  }
+  else if (mouseClick === 0){
     squareSize -= 5;
+    mouseClick = 1;
   }
   for (let x = 0; x <= width; x += squareSize){
     for (let y = 0; y <= height; y += squareSize){
-      if (z === 0){
-        chooseColours();
-      }
+      chooseColours();
       rect(x,y,squareSize,squareSize);
     }
   }
-  z += 1;
-  print(mouseClick);
-  print(previousMouseClick);
+  runSquares = false;
 }
-
 
 function chooseColours(){
   let rColour = int(random(0,255));
   let gColour = int(random(0,255));
   let bColour = int(random(0,255));
   fill(rColour,gColour,bColour);
-}
-
-function mouseClicked(){
-  if (mouseButton === RIGHT){
-    mouseClick += 1;
-    previousMouseClick = mouseClick;
-  }
-  else if (mouseButton === LEFT){
-    mouseClick -= 1;
-    previousMouseClick = mouseClick;
-
-  }
 }
