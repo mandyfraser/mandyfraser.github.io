@@ -13,7 +13,7 @@ function setup() {
 }
 
 function draw() {
-  if(mouseClicked()){
+  if(mousePressed()){
     runSquares = true;
   }
   if (runSquares){
