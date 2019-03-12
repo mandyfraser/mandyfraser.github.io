@@ -7,13 +7,14 @@
 
 let runSquares = true;
 let mouseClick = 1;
+let commonDenominators = [];
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
 }
 
 function draw() {
-  if(mousePressed()){
+  if(mouseClicked()){
     runSquares = true;
   }
   if (runSquares){
@@ -36,7 +37,7 @@ function draw() {
   print(mouseClick);
 }
 
-function mousePressed(){
+function mouseClicked(){
   if (mouseButton === RIGHT){
     mouseClick = 2;
   }
@@ -46,7 +47,8 @@ function mousePressed(){
 }
 
 function squares(){
-  let squareSize = width/26;
+  denom();
+  let squareSize = width/random(commonDenominators);
   if (mouseClick === 2){
     squareSize += 5;
     mouseClick = 1;
@@ -69,4 +71,12 @@ function chooseColours(){
   let gColour = int(random(0,255));
   let bColour = int(random(0,255));
   fill(rColour,gColour,bColour);
+}
+
+function denom(){
+  for (let i = 0; i < 500; i++){
+    if (width % i === 0 && height % i === 0){
+      append(commonDenominators, i);
+    }
+  }
 }
