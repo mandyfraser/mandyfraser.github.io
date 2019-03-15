@@ -16,12 +16,14 @@ function setup() {
 function drawTerrain(){
   //do all the work to draw terrain one frame
   let xOff = start;
+  let highest = height;                               //for the flag thing
+  let highestX = 0;
   for (let x = 0; x < width; x += tWidth){
     let currentHeight = noise(xOff) * height;         //for the flag thing
     rect(x,noise(xOff) * height,x + tWidth, height);
     xOff += 0.01;
   }
-  start += 0.01;      //for the scrolling thing
+  start += 0.01;                                      //for the scrolling thing
 }
 
 function draw() {
