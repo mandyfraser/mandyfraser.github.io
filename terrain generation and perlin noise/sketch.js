@@ -1,42 +1,55 @@
-// Project Title
-// Your Name
-// Date
+// Terrain Generation and Perlin Noise
+// Mandy Fraser
+// 16/03/19
 //
 // Extra for Experts:
-// - describe what you did to take this project "above and beyond"
+// I included the draw flag function and visualized the average height per frame.
 
-let rectSize = 5;
-let xOff = 0;
-
+let rectSize = 1;
+let start = 0;
+let currentHeight = 0;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   rectMode(CORNERS);
 }
 
-function draw() {
-  // let x = map(noise(xoff),0,1,0,width);
-  // xoff += 0.01;
-}
-
 function generateTerrain(){
   // background(0);
-  for (let x = 0; x < Width; x += rectSize){
-    // fill(0,random(0,255),random(0,255));
-    let x = map(noise(xOff),0,1,0,width);
+  let xOff = start;
+  let highestX = 0;
+  let highest = height;
+  let heights = 0;
+  for (let x = 0; x < width; x += rectSize){
+    let currentHeight = noise(xOff) * height;
+    heights += currentHeight;                   //add up all of the heights/y values
+    if (currentHeight < highest){
+      highest = currentHeight;
+      highestX = x;
+    }
+    fill(0);
+    stroke(0);
+    rect(x,noise(xOff) * height,x + rectSize,height);
     xOff += 0.01;
-    rect(x,y,rectSize,random(-20,-500));
   }
+  fill(255,0,0);
+  drawFlag(highestX,highest);
+  calculateAverage(heights);
+  start += 0.01;
 }
 
-function keyPressed(){
-  if (keyCode === LEFT_ARROW){
-    rectSize -= 1;
-  }
-  else if (keyCode === RIGHT_ARROW){
-    rectSize += 1;
-  }
-  background(255);
-  fill(100);
+function drawFlag(flagX,flagY){
+  rect(flagX,flagY,flagX + 1, flagY - 30);
+  triangle(flagX, flagY - 18, flagX, flagY - 30, flagX + 15, flagY - 24);
+}
+
+function calculateAverage(value){
+  let average = value / width;             //rectSize = 1, so the number of rectangles/y values is equal to the width of the screen
+  stroke(255,0,0);
+  rect(0,average,width,average);
+}
+
+function draw() {
+  background(220);
   generateTerrain();
 }
