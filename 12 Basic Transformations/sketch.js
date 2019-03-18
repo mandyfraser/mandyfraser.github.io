@@ -2,6 +2,8 @@
 
 
 let originalSpacing = 20;
+let x = 100;
+let xSpeed = 5;
 
 
 function setup() {
@@ -9,27 +11,60 @@ function setup() {
 }
 
 function draw() {
-  background(255);
+  //background opition one
+  // background(255);
+  fill(255,100);
+  rect(0,0,width,height);
+
   drawBasicGrid(220);
 
 
   //transformation one: TRANSLATION
+  // push();
+  // translate(100, 20);
+  // rectangleRed(0,0);
+  // pop();
 
-
-
-  //add push()  pop()
+  // push();
+  // translate(mouseX, mouseY);
+  // drawBasicGrid(75);
+  // rectangleBlue(0,0);
 
 
 
 
   //transformation two: SCALE
+  // rectangleRed(0,0);
+  
+  // push();
+  // rectMode(CENTER);
+  // translate(100,100);
+  // scale(mouseX/100);
+
+  // drawBasicGrid(50);
+  // rectangleBlue(0,0);
+  // pop();
+
 
 
 
 
   //transformation three: ROTATION
   //reminder: rotations are measured in radians, not degrees! Functions can help with the conversion...
- 
+  push();
+  translate(x,60);
+  rotate(radians(frameCount));   //frameCount === the current frame
+  scale(mouseX/width*2);
+  face(0,0);
+
+
+  pop();
+
+  x += xSpeed;
+
+  if (x < 0 || x > width){
+    xSpeed *= -1;
+  }
 
 
   //Combinations of Transformations
