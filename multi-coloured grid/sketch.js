@@ -1,65 +1,53 @@
-// Project Title
-// Your Name
-// Date
+// Multi-Coloured Grid
+// Mandy Fraser
+// 3/21/19
 //
 // Extra for Experts:
-// - describe what you did to take this project "above and beyond"
+// I added a colour scheme and made it so the squares wouldn't go off the screen.
 
-let runSquares = true;
-let mouseClick = 1;
-let commonDenominators = [];
+let runSquares = true;       //determines if the squares should be drawn again
+let commonDenominators = [];   //holds numbers that the width and height of the squares can be so they don't go off the screen
+let rColour,gColour,bColour;
+let squareSize;  //width and height of the squares
+let sizeSelection;
+let start = true;  //determines if this is the first time the squares are being drawn
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  createCanvas(1400, 700);
 }
 
 function draw() {
-  if(mouseClicked()){
-    runSquares = true;
-  }
   if (runSquares){
+    denom();
+    if (start){
+      sizeSelection = commonDenominators.length / 2;
+    }
+    squareSize = commonDenominators[sizeSelection];
     squares();
   }
-  // let squareSize = width/26;
-  // if (mouseClick === 2){
-  //   squareSize += 5;
-  //   mouseClick = 1;
-  // }
-  // else if (mouseClick === 0){
-  //   squareSize -= 5;
-  //   mouseClick = 1;
-  // for (let x = 0; x <= width; x += squareSize){
-  //   for (let y = 0; y <= height; y += squareSize){
-  //     chooseColours();
-  //     rect(x,y,squareSize,squareSize);
-  //   }
-  // }
-  print(mouseClick);
+  start = false;
 }
 
-function mouseClicked(){
+function mousePressed(){
   if (mouseButton === RIGHT){
-    mouseClick = 2;
+    if (sizeSelection > 0){
+      sizeSelection -= 1;
+      runSquares = true;
+    }
   }
   else if (mouseButton === LEFT){
-    mouseClick = 0;
+    if (commonDenominators[0] > sizeSelection){
+      sizeSelection += 1;
+      runSquares = true;
+    }
   }
 }
 
 function squares(){
-  denom();
-  let squareSize = width/random(commonDenominators);
-  if (mouseClick === 2){
-    squareSize += 5;
-    mouseClick = 1;
-  }
-  else if (mouseClick === 0){
-    squareSize -= 5;
-    mouseClick = 1;
-  }
   for (let x = 0; x <= width; x += squareSize){
     for (let y = 0; y <= height; y += squareSize){
       chooseColours();
+      fill(rColour,gColour,bColour);
       rect(x,y,squareSize,squareSize);
     }
   }
@@ -67,15 +55,14 @@ function squares(){
 }
 
 function chooseColours(){
-  let rColour = int(random(0,255));
-  let gColour = int(random(0,255));
-  let bColour = int(random(0,255));
-  fill(rColour,gColour,bColour);
+  rColour = int(random(40,70));
+  gColour = rColour;
+  bColour = int(random(100,200));
 }
 
-function denom(){
-  for (let i = 0; i < 500; i++){
-    if (width % i === 0 && height % i === 0){
+function denom(){ //find common denominators
+  for (let i = 1000; i > 0; i--){
+    if (width % i === 0 && height % i === 0){   //if i can be evenly divisible by the size of the screen, add it to common denominators
       append(commonDenominators, i);
     }
   }
