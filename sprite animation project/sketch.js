@@ -26,10 +26,23 @@ function setup() {
 
 function draw() {
   background(255);
+  if(keyCode === RIGHT_ARROW && keyIsPressed){
+    direction = 0;
+  }
+  else if(keyCode === LEFT_ARROW && keyIsPressed){
+    direction = 1;
+  }
+  else{
+    idle();
+  }
+  print(counter);
+}
+
+function idle(){
   if(direction === 0){
     image(idleSpritesR[counter],width/2,height/2);
   }
-  if(direction === 1){
+  else if (direction === 1){
     image(idleSpritesL[counter],width/2,height/2);
   }
   if (frameCount % int(speed) === 0){
@@ -39,19 +52,10 @@ function draw() {
         counter = 4;
       }
     }
-    if (direction === 1){
+    else if (direction === 1){
       if (counter > 13){
         counter = 11;
       }
     }
-  }
-}
-
-function keyPressed(){
-  if (keyCode === RIGHT_ARROW){
-    direction = 0;
-  }
-  if (keyCode === LEFT_ARROW){
-    direction = 1;
   }
 }
