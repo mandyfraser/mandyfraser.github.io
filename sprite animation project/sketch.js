@@ -35,7 +35,6 @@ function draw() {
   else{
     idle();
   }
-  print(counter);
 }
 
 function idle(){
