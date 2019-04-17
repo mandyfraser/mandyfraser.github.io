@@ -5,7 +5,12 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
-
+let thingyOutR = 0;
+let thingyOutG = 0;
+let thingyOutB = 0;
+let thingyInR = 0;
+let thingyInG = 0;
+let thingyInB = 0;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -13,12 +18,7 @@ function setup() {
 }
 
 function colours(){
-  let thingyOutR = 0;
-  let thingyOutG = 0;
-  let thingyOutB = 0;
-  let thingyInR = 0;
-  let thingyInG = 0;
-  let thingyInB = 0;
+
 }
 
 function drawThingyOutside(){
