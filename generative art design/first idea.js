@@ -11,13 +11,14 @@ function setup() {
   noLoop();
 }
 
-function drawSpiralOutside(){
+function drawThingyOutside(){
   let xOff = 1;
   let squareWidth = 0.1;
+  let thingyHue;
   for(let x = 0 - (width/2); x < width/2; x++){          //was (let x = 0 - (width/2); x <= width/2; x++), then (let x = 0 - 360; x < 360; x++)
-    if(x % 50 === 0){
-      // stroke(205,x,330);
-      stroke(205,map(x,-width /2, width/2, 0, 255),330);
+    thingyHue = constrain(x, 100, 275);
+    if(thingyHue % 50 === 0){
+      stroke(thingyHue % 360,280,330);
     }
     push();
     rotate(radians(x*2));  //rotate by x or x*2?
@@ -27,12 +28,14 @@ function drawSpiralOutside(){
   }
 }
 
-function drawSpiralInside(){
+function drawThingyInside(){
   let xOff = 1;
   let squareWidth = 0.1;
+  let thingyHue;
   for(let x = 0 - (width/2); x < width/2; x++){          //was (let x = 0 - (width/2); x <= width/2; x++), then (let x = 0 - 360; x < 360; x++)
-    if(x % 50 === 0){
-      stroke(205,map(x,-width /2, width/2, 0, 255),330);
+    thingyHue = constrain(x, 100, 275);
+    if(thingyHue % 50 === 0){
+      stroke(-x % 360,280,330);
     }
     push();
     rotate(radians(x*2));  //rotate by x or x*2?
@@ -44,13 +47,12 @@ function drawSpiralInside(){
 
 function draw() {
   colorMode(RGB);
-  background(0);
+  background(255);
   colorMode(HSB,360);
-  // stroke(255);
   push();
   translate(width/2, height/2);
-  drawSpiralOutside();
-  drawSpiralInside();
+  drawThingyOutside();
+  drawThingyInside();
   pop();
 }
 
