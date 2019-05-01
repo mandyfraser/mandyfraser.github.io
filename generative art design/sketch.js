@@ -6,7 +6,7 @@
 // - describe what you did to take this project "above and beyond"
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  createCanvas(4500, 3000);
   rectMode(CORNERS);
   noLoop();
 }
@@ -20,7 +20,7 @@ function drawSpiralOutside(){
       stroke(205,map(x,-width /2, width/2, 0, 255),330);
     }
     push();
-    rotate(radians(x*2));  //rotate by x or x*2?
+    rotate(radians(x));  //rotate by x or x*2?
     rect(x, noise(xOff) * -height/2, x + squareWidth, 0);
     pop();
     xOff += 0.025;
@@ -35,7 +35,7 @@ function drawSpiralInside(){
       stroke(205,map(x,-width /2, width/2, 0, 255),330);
     }
     push();
-    rotate(radians(x*2));  //rotate by x or x*2?
+    rotate(radians(x));  //rotate by x or x*2?
     rect(x, noise(xOff) * height/2, x + squareWidth, 0);
     pop();
     xOff += 0.025;
