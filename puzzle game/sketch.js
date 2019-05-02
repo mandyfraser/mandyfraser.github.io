@@ -1,5 +1,5 @@
-// Project Title
-// Your Name
+// Puzzle Game
+// Mandy Fraser
 // Date
 //
 // Extra for Experts:
@@ -81,8 +81,19 @@ function drawGrid(){
   // Render a grid of squares - fill color set according to data stored in the 2D array
   for (let x = 0; x < NUM_COLS ; x++){
     for (let y = 0; y < NUM_ROWS; y++){
-      fill(gridData[y][x]); 
-      rect(x*rectWidth, y*rectHeight, rectWidth, rectHeight);
+      if(y === currentRow && x === currentCol){
+        fill(0,255,0);
+        rect(x*rectWidth, y*rectHeight, rectWidth, rectHeight);
+        colouredOverlay(currentCol-1, currentRow);
+        colouredOverlay(currentCol+1, currentRow);
+        colouredOverlay(currentCol, currentRow-1);
+        colouredOverlay(currentCol, currentRow+1);
+      }
+      else if((y !== currentRow + 1 && x !== currentCol) && (y !== currentRow && x !== currentCol + 1)){
+        fill(gridData[y][x]);
+        rect(x*rectWidth, y*rectHeight, rectWidth, rectHeight);
+      }
+
     }
   }
 }
@@ -113,4 +124,13 @@ function randomize(){
     counter ++;
   }
   print(gridData);
+}
+
+function colouredOverlay(columnOverlay, rowOverlay){
+  if (columnOverlay >= 0 && columnOverlay < NUM_COLS ){
+    if (rowOverlay >= 0 && rowOverlay < NUM_ROWS){
+      fill(0,150,0);
+      rect(columnOverlay*rectWidth,rowOverlay*rectHeight,rectWidth,rectHeight);
+    }
+  }
 }
