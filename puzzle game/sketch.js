@@ -15,6 +15,7 @@ let gridData = [[0,0,0,0,0],
                 [0,255,0,0,0],
                 [255,255,255,0,0]];
 let won = false;
+let crossOrSquare = 0;  // 0 = cross, 1 = square
 
 
 
@@ -34,22 +35,39 @@ function draw() {
     text("You Win!", width/2, height/2);
   }
   else{
-    determineActiveSquare();   //figure out which tile the mouse cursor is over
     drawGrid();                //render the current game board to the screen (and the overlay)
+    determineActiveSquare();   //figure out which tile the mouse cursor is over
   }
 
 }
 
-
+function keyPressed(){
+  if (key === " "){
+    if(crossOrSquare === 0){
+      crossOrSquare = 1;
+    }
+    else{
+      crossOrSquare = 0;
+    }
+  }
+}
 
 function mousePressed(){
   // cross-shaped pattern flips on a mouseclick. Boundary conditions are checked within the flip function to ensure in-bounds access for array
   if (mouseButton === LEFT){
-    flip(currentCol, currentRow);
-    flip(currentCol-1, currentRow);
-    flip(currentCol+1, currentRow);
-    flip(currentCol, currentRow-1);
-    flip(currentCol, currentRow+1);
+    if(crossOrSquare === 0){
+      flip(currentCol, currentRow);
+      flip(currentCol-1, currentRow);
+      flip(currentCol+1, currentRow);
+      flip(currentCol, currentRow-1);
+      flip(currentCol, currentRow+1);
+    }
+    else{
+      flip(currentCol, currentRow);
+      flip(currentCol + 1, currentRow);
+      flip(currentCol, currentRow + 1);
+      flip(currentCol + 1, currentRow + 1);
+    }
   }
   if(mouseButton === CENTER){
     flip(currentCol, currentRow);
@@ -75,25 +93,28 @@ function determineActiveSquare(){
   // An expression to run each frame to determine where the mouse currently is.
   currentRow = int(mouseY / rectHeight);
   currentCol = int(mouseX / rectWidth);
+  fill(0,255,0,100);
+  rect(currentCol * rectWidth, currentRow * rectHeight, rectWidth, rectHeight);
+  fill(0,150,0,100);
+  if(crossOrSquare === 0){
+    rect((currentCol - 1) * rectWidth, currentRow * rectHeight, rectWidth, rectHeight);
+    rect((currentCol + 1) * rectWidth, currentRow * rectHeight, rectWidth, rectHeight);
+    rect(currentCol * rectWidth, (currentRow - 1) * rectHeight, rectWidth, rectHeight);
+    rect(currentCol * rectWidth, (currentRow + 1) * rectHeight, rectWidth, rectHeight);
+  }
+  else{
+    rect((currentCol + 1) * rectWidth, (currentRow + 1) * rectHeight, rectWidth, rectHeight);
+    rect((currentCol + 1) * rectWidth, currentRow * rectHeight, rectWidth, rectHeight);
+    rect(currentCol * rectWidth, (currentRow + 1) * rectHeight, rectWidth, rectHeight);
+  }
 }
 
 function drawGrid(){
   // Render a grid of squares - fill color set according to data stored in the 2D array
   for (let x = 0; x < NUM_COLS ; x++){
     for (let y = 0; y < NUM_ROWS; y++){
-      if(y === currentRow && x === currentCol){
-        fill(0,255,0);
-        rect(x*rectWidth, y*rectHeight, rectWidth, rectHeight);
-        colouredOverlay(currentCol-1, currentRow);
-        colouredOverlay(currentCol+1, currentRow);
-        colouredOverlay(currentCol, currentRow-1);
-        colouredOverlay(currentCol, currentRow+1);
-      }
-      else if((y !== currentRow + 1 && x !== currentCol) && (y !== currentRow && x !== currentCol + 1)){
-        fill(gridData[y][x]);
-        rect(x*rectWidth, y*rectHeight, rectWidth, rectHeight);
-      }
-
+      fill(gridData[y][x]);
+      rect(x*rectWidth, y*rectHeight, rectWidth, rectHeight);
     }
   }
 }
@@ -109,7 +130,6 @@ function win(){
     fill(0);
     won = true;
   }
-  print(points);
 }
 
 function randomize(){
@@ -124,13 +144,4 @@ function randomize(){
     counter ++;
   }
   print(gridData);
-}
-
-function colouredOverlay(columnOverlay, rowOverlay){
-  if (columnOverlay >= 0 && columnOverlay < NUM_COLS ){
-    if (rowOverlay >= 0 && rowOverlay < NUM_ROWS){
-      fill(0,150,0);
-      rect(columnOverlay*rectWidth,rowOverlay*rectHeight,rectWidth,rectHeight);
-    }
-  }
 }
