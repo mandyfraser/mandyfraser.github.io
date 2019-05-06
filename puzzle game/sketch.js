@@ -1,9 +1,9 @@
 // Puzzle Game
 // Mandy Fraser
-// Date
+// 05/05/19
 //
 // Extra for Experts:
-// - describe what you did to take this project "above and beyond"
+// I added in the coloured overlay and the ability to switch between a cross pattern and a square pattern.
 
 
 let NUM_ROWS = 4;
@@ -34,7 +34,7 @@ function draw() {
   if(won === true){
     text("You Win!", width/2, height/2);
   }
-  else{
+  else{                        //only draws the grid if the player hasn't yet won
     drawGrid();                //render the current game board to the screen (and the overlay)
     determineActiveSquare();   //figure out which tile the mouse cursor is over
   }
@@ -55,14 +55,14 @@ function keyPressed(){
 function mousePressed(){
   // cross-shaped pattern flips on a mouseclick. Boundary conditions are checked within the flip function to ensure in-bounds access for array
   if (mouseButton === LEFT){
-    if(crossOrSquare === 0){
+    if(crossOrSquare === 0){                 //cross
       flip(currentCol, currentRow);
       flip(currentCol-1, currentRow);
       flip(currentCol+1, currentRow);
       flip(currentCol, currentRow-1);
       flip(currentCol, currentRow+1);
     }
-    else{
+    else{                                    //square
       flip(currentCol, currentRow);
       flip(currentCol + 1, currentRow);
       flip(currentCol, currentRow + 1);
@@ -93,10 +93,10 @@ function determineActiveSquare(){
   // An expression to run each frame to determine where the mouse currently is.
   currentRow = int(mouseY / rectHeight);
   currentCol = int(mouseX / rectWidth);
-  fill(0,255,0,100);
+  fill(0,255,0,100);                                                                           //draws the overlay on current squares
   rect(currentCol * rectWidth, currentRow * rectHeight, rectWidth, rectHeight);
   fill(0,150,0,100);
-  if(crossOrSquare === 0){
+  if(crossOrSquare === 0){                                                                     //draws the overlay on surrounding squares
     rect((currentCol - 1) * rectWidth, currentRow * rectHeight, rectWidth, rectHeight);
     rect((currentCol + 1) * rectWidth, currentRow * rectHeight, rectWidth, rectHeight);
     rect(currentCol * rectWidth, (currentRow - 1) * rectHeight, rectWidth, rectHeight);
@@ -134,14 +134,18 @@ function win(){
 
 function randomize(){
   let counter = 0;
-  for(let i = 0; i < gridData.length; i += random(1,4)){
-    if(gridData[counter][i] === 0){
-      gridData[counter][i] = 255;
+  for (let x = 0; x < NUM_COLS ; x++){
+    for (let y = 0; y < NUM_ROWS; y++){
+      counter = int(random(0,2));          //randomly picks squares from the array gridData to flip
+      if(counter === 0){
+        if(gridData[y][x] === 0){
+          gridData[y][x] = 255;
+        }
+        else if(gridData[y][x] === 255){
+          gridData[y][x] = 0;
+        }
+      }
     }
-    else if(gridData[counter][i] === 255){
-      gridData[counter][i] = 0;
-    }
-    counter ++;
   }
-  print(gridData);
+  print(counter);
 }
