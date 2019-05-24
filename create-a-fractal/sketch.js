@@ -28,10 +28,13 @@ function draw() {
 }
 
 function toruses(xPosition,angle){
-  if(xPosition > 0 - width/2 && xPosition < width/2){
+  if(xPosition === 0 - width/2 && xPosition < width/2){
     rotateX(radians(angle));
     translate(xPosition,0);
     torus(torusDiameter,10);
     toruses(x+torusDiameter*2,angle+90);          //was toruses(x+angle+90,180);
+  }
+  else{
+    // toruses(x+torusDiameter*2,angle+90);
   }
 }
