@@ -9,7 +9,7 @@ let sound, fft, soundColourR, soundColourG, soundColourB;
 let bandWidth;
 
 function preload(){
-  sound = loadSound("assets/12 Bloodflood.m4a");
+  sound = loadSound("assets/05 Chlorine.m4a");
 }
 
 function setup() {
@@ -21,8 +21,12 @@ function setup() {
 }
 
 function mousePressed(){
-  sound.play();
-  // createSpectrum();
+  if(sound.isPlaying()){
+    sound.stop();
+  }
+  else{
+    sound.play();
+  }
 }
 
 function draw() {
