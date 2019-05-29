@@ -5,7 +5,8 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
-let sound, fft, xOff;
+let sound, fft;
+let increment = 0;
 
 function preload(){
   sound = loadSound("assets/05 Chlorine.m4a");
@@ -16,10 +17,7 @@ function setup() {
   fft = new p5.FFT();
   sound.setVolume(1);
   colorMode(RGB);
-}
-
-function generateTerrain(){
-  
+  rectMode(CORNERS);
 }
 
 function mousePressed(){
@@ -34,21 +32,25 @@ function mousePressed(){
 function draw() {
   background(200);
   createSpectrum();
-  print(getEnergy("treble"));
 }
 
 function createSpectrum(){
   let spectrum = fft.analyze();
-  noStroke();
+  // noStroke();
+  // for(let i = 0; i < spectrum.length; i++){
+  //   let x = map(i,0,spectrum.length,0,width);
+  //   let y = -height + map(spectrum[i],0,255,height,0);
+  //   fill(i+5,i+25,i*2);
+  //   rect(x,height,width/spectrum.length,y);
+  // }
+  let xOff = 0;
+  let rectWidth = width/spectrum.length;
   for(let i = 0; i < spectrum.length; i++){
     let x = map(i,0,spectrum.length,0,width);
-    let y = -height + map(spectrum[i],0,255,height,0);
-    getEnergy("treble");
     fill(i+5,i+25,i*2);
-    rect(x,height,width/spectrum.length,y);
+    increment = map(spectrum[i],0,255,0,1);
+    rect(x,noise(increment)*height,1,height);
+    print(x);
   }
-}
-
-function getEnergy(){
-
+  // print(spectrum);
 }
