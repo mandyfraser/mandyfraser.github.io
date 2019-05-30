@@ -7,6 +7,7 @@
 
 let sound, fft;
 let increment = 0;
+let start = 0;
 
 function preload(){
   sound = loadSound("assets/05 Chlorine.m4a");
@@ -49,7 +50,7 @@ function createSpectrum(){
     let x = map(i,0,spectrum.length,0,width);
     fill(i+5,i+25,i*2);
     increment = map(spectrum[i],0,255,0,1);
-    rect(x,noise(increment)*height,1,height);
+    rect(x,noise(increment)*height,rectWidth,height);
     print(x);
   }
   // print(spectrum);
