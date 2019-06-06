@@ -13,6 +13,7 @@ let x,y;
 let b;
 let rectX,rectY;
 let wheelDiameter = 30;
+let rectangles = [];
 
 // function preload(){
 //   biker = loadImage("assets/spr_bike2man_0.png");
@@ -22,6 +23,7 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   bw = new Wheel(0,0);
   fw = new Wheel(0+50,0);
+  generateTerrain();
 }
 
 function generateTerrain(){
@@ -31,23 +33,43 @@ function generateTerrain(){
     currentHeight = noise(xOff) * height;
     rectY = -height + map(noise(xOff),0,1,height,0);
     // fill(x+5,x+25,x*2);
-    rect(rectX,height,rectSize,rectY);
-    fw.collision(rectX,height + rectY,rectSize,rectY * -1);
-    // push();
-    // translate(x,y*-1);
-    // pop();
+    rectangles.push(new Rectangle(rectX,height,rectSize,rectY));
+    // rect(rectX,height,rectSize,rectY);
+    // fw.collision(rectX,height + rectY,rectSize,rectY * -1);
     xOff += 0.001;
   }
+  // updateTerrain();
   // start += 0.004;
+}
+
+function updateTerrain(){
+  rectangles.splice(0);
+  rectangles.push(new Rectangle(rectX,height,rectSize,rectY));
 }
 
 function draw() {
   background(255);
-  generateTerrain();
+  // generateTerrain();
   // bw.move();
   // bw.display();
+  for(let i = 0; i < rectangles.length; i++){
+    rectangles[i].display();
+    fw.collision(rectX,height + rectY,rectSize,rectY * -1);
+  }
   fw.move();
   fw.display();
+}
+
+class Rectangle{
+  constructor(x_,y_,w_,h_){
+    this.x = x_;
+    this.y = y_;
+    this.w = w_;
+    this.h = h_;
+  }
+  display(){
+    rect(this.x, this.y, this.w, this.h);
+  }
 }
 
 class Wheel{
