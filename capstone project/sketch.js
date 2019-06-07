@@ -5,7 +5,7 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
-let rectSize = 10;
+let rectSize = 1;
 let start = 0;
 let biker;
 let currentHeight;
@@ -14,6 +14,7 @@ let b;
 let rectX,rectY;
 let wheelDiameter = 30;
 let rectangles = [];
+let xOff;
 
 // function preload(){
 //   biker = loadImage("assets/spr_bike2man_0.png");
@@ -27,13 +28,12 @@ function setup() {
 }
 
 function generateTerrain(){
-  let xOff = start;
+  xOff = start;
   for(let i = 0; i < width; i += rectSize){
     rectX = i;
-    currentHeight = noise(xOff) * height;
     rectY = -height + map(noise(xOff),0,1,height,0);
     // fill(x+5,x+25,x*2);
-    rectangles.push(new Rectangle(rectX,height,rectSize,rectY));
+    rectangles.push(new Rectangle(rectX,height,rectSize,rectY,height + rectY, rectY * -1));
     // rect(rectX,height,rectSize,rectY);
     // fw.collision(rectX,height + rectY,rectSize,rectY * -1);
     xOff += 0.001;
@@ -44,7 +44,9 @@ function generateTerrain(){
 
 function updateTerrain(){
   rectangles.splice(0);
-  rectangles.push(new Rectangle(rectX,height,rectSize,rectY));
+  rectX = width - rectSize;
+  rectY = -height + map(noise(xOff),0,1,height,0);
+  rectangles.push(new Rectangle(rectX,height,rectSize,rectY,height + rectY, rectY * -1));
 }
 
 function draw() {
@@ -53,19 +55,26 @@ function draw() {
   // bw.move();
   // bw.display();
   for(let i = 0; i < rectangles.length; i++){
+    if(rectangles[i].collision()){
+      print("collision");
+    }
     rectangles[i].display();
-    fw.collision(rectX,height + rectY,rectSize,rectY * -1);
   }
   fw.move();
   fw.display();
 }
 
 class Rectangle{
-  constructor(x_,y_,w_,h_){
+  constructor(x_,y_,w_,h_,yCol_,hCol_){
     this.x = x_;
     this.y = y_;
     this.w = w_;
     this.h = h_;
+    this.yCol = yCol_;
+    this.hCol = hCol_;
+  }
+  collision(){
+    return fw.collision(this.x,this.yCol,this.w,this.hCol);
   }
   display(){
     rect(this.x, this.y, this.w, this.h);
@@ -76,7 +85,7 @@ class Wheel{
   constructor(x_,y_){
     this.x = x_;
     this.y = y_;
-    this.xSpeed = 10;
+    this.xSpeed = 0;
     this.ySpeed = 0;
     this.GRAV = 0.05;
     this.hit = false;
@@ -88,7 +97,8 @@ class Wheel{
     //   print(x,y,w,h,this.x,this.y,wheelDiameter);
     // }
     if(this.hit){
-      this.ySpeed = 0;
+      this.ySpeed = -this.GRAV;
+      return true;
     }
     //print(this.hit);
   }
@@ -96,13 +106,23 @@ class Wheel{
   move(){
     if(this.hit){
       print(this.hit);
-      this.ySpeed = 0;
+      this.ySpeed += -this.GRAV;
     }
     else{
       this.ySpeed += this.GRAV;
     }
     this.y += this.ySpeed;
-    
+
+    if(keyIsDown(LEFT_ARROW)){
+      this.xSpeed = -5;
+    }
+    else if(keyIsDown(RIGHT_ARROW)){
+      this.xSpeed = 5;
+    }
+    else{
+      this.xSpeed = 0;
+    }
+    this.x += this.xSpeed;
   }
 
   display(){
