@@ -5,7 +5,7 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
-let rectSize = 1;
+let rectSize = 2;
 let start = 0;
 let biker;
 let currentHeight;
@@ -15,6 +15,7 @@ let rectX,rectY;
 let wheelDiameter = 30;
 let rectangles = [];
 let xOff;
+let rectHeight;
 
 // function preload(){
 //   biker = loadImage("assets/spr_bike2man_0.png");
@@ -23,7 +24,7 @@ let xOff;
 function setup() {
   createCanvas(windowWidth, windowHeight);
   bw = new Wheel(0,0);
-  fw = new Wheel(0+50,0);
+  fw = new Wheel(width/2,0);
   generateTerrain();
 }
 
@@ -34,9 +35,10 @@ function generateTerrain(){
     rectY = -height + map(noise(xOff),0,1,height,0);
     // fill(x+5,x+25,x*2);
     rectangles.push(new Rectangle(rectX,height,rectSize,rectY,height + rectY, rectY * -1));
+    // rectHeight = height + rectY;
     // rect(rectX,height,rectSize,rectY);
     // fw.collision(rectX,height + rectY,rectSize,rectY * -1);
-    xOff += 0.001;
+    xOff += 0.01;
   }
   // updateTerrain();
   // start += 0.004;
@@ -56,7 +58,7 @@ function draw() {
   // bw.display();
   for(let i = 0; i < rectangles.length; i++){
     if(rectangles[i].collision()){
-      print("collision");
+      // print("collision");
     }
     rectangles[i].display();
   }
@@ -76,6 +78,9 @@ class Rectangle{
   collision(){
     return fw.collision(this.x,this.yCol,this.w,this.hCol);
   }
+  // xCollision(){
+  //   return this.yCol;
+  // }
   display(){
     rect(this.x, this.y, this.w, this.h);
   }
@@ -88,41 +93,66 @@ class Wheel{
     this.xSpeed = 0;
     this.ySpeed = 0;
     this.GRAV = 0.05;
-    this.hit = false;
+    this.yHit = false;
+    this.yHitInFront = false;
+    this.yHitBehind = false;
+    this.xHitInFront = false;
+    this.xHitBehind = false;
+    this.disableGrav = false;
   }
 
   collision(x,y,w,h){
-    this.hit = collideRectCircle(x,y,w,h,this.x,this.y,wheelDiameter);
+    rectHeight = y;
+    this.yHit = collideRectCircle(x,y,w,h,this.x,this.y+this.ySpeed,wheelDiameter);
+    this.disableGrav = collideRectCircle(x,y,w,h,this.x,this.y+this.ySpeed,wheelDiameter);
+    this.xHitInFront = collideRectCircle(x,y,w,h,this.x + 1,this.y,wheelDiameter);
+    this.xHitBehind = collideRectCircle(x,y,w,h,this.x - 1,this.y,wheelDiameter);
+    if(this.xHitBehind){
+      print("collision");
+    }
     // if(frameCount % 6 === 0){
     //   print(x,y,w,h,this.x,this.y,wheelDiameter);
     // }
-    if(this.hit){
-      this.ySpeed = -this.GRAV;
+
+    if(this.yHit){
+      // this.ySpeed = -this.GRAV;
+      this.y = y - wheelDiameter/2;
+      print(this.yHit,this.xHitInFront,this.xHitBehind);
       return true;
     }
+
     //print(this.hit);
   }
 
   move(){
-    if(this.hit){
-      print(this.hit);
+    if(this.yHit){
+      // print(this.yHit);
       this.ySpeed += -this.GRAV;
     }
     else{
       this.ySpeed += this.GRAV;
     }
-    this.y += this.ySpeed;
 
     if(keyIsDown(LEFT_ARROW)){
-      this.xSpeed = -5;
+      if(this.xHitBehind){
+        this.y = rectHeight;
+      }
+      this.xSpeed = -1;
     }
     else if(keyIsDown(RIGHT_ARROW)){
-      this.xSpeed = 5;
+      if(this.xHitInFront){
+        this.y = rectHeight;
+      }
+      this.xSpeed = 1;
     }
     else{
       this.xSpeed = 0;
     }
+    if(!this.yHit){
+      this.y += this.ySpeed;
+    }
     this.x += this.xSpeed;
+    // print(this.ySpeed);
   }
 
   display(){
@@ -159,32 +189,5 @@ class Wheel{
 //   display(){
 //     ellipseMode(CENTER);
 //     ellipse(this.x, this.y, wheelDiameter);
-//   }
-// }
-
-// class Biker{
-//   constructor(x1_,y1_,x2_,y2_){
-//     this.xBackWheel = x1_;
-//     this.yBackWheel = y1_;
-//     this.xFrontWheel = x2_;
-//     this.yFrontWheel = y2_;
-//     this.xSpeed = 10;
-//     this.ySpeed = 0;
-//     this.GRAV = -0.02;
-//     this.hitBackWheel = false;
-//     this.hitFrontWheel = true;
-//   }
-
-//   move(){
-    
-//   }
-
-//   collide(){
-//     this.hitBackWheel = 
-//   }
-
-//   display(){
-//     imageMode(CENTER);
-//     image(biker, width/2, height/2, 144, 111);
 //   }
 // }
