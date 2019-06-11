@@ -5,7 +5,7 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
-let rectSize = 2;
+let rectSize = 1;
 let start = 0;
 let biker;
 let currentHeight;
@@ -112,9 +112,9 @@ class Wheel{
     this.xHitBehind = collideRectCircle(x,y,w,h,this.x - 1,this.y,wheelDiameter);
     this.yHitInFront = collideRectCircle(x,y,w,h,this.x + 2,this.y,wheelDiameter);
     this.yHitBehind = collideRectCircle(x,y,w,h,this.x - 2,this.y,wheelDiameter);
-    if(this.xHitBehind){
-      print("collision");
-    }
+    // if(this.xHitBehind){
+    //   print("collision");
+    // }
     // if(frameCount % 6 === 0){
     //   print(x,y,w,h,this.x,this.y,wheelDiameter);
     // }
@@ -127,9 +127,18 @@ class Wheel{
     // }
 
     if(this.yHit){
-      this.ySpeed = -this.GRAV;
-      this.y = y - wheelDiameter/2;
-      print(this.yHit,this.xHitInFront,this.xHitBehind);
+      // this.ySpeed = -this.GRAV;
+      // this.y = y - wheelDiameter/2;
+
+      // this.y = rectHeight;
+
+      // this.ySpeed = 0;
+      // this.y = y - (this.y - y);
+      // print(y - (this.y-y),this.ySpeed,this.yHit,this.xHitInFront,this.xHitBehind);
+      this.ySpeed = 0;
+      this.y = rectHeight - wheelDiameter/2;
+      print(this.y);
+
       return true;
     }
 
@@ -137,19 +146,21 @@ class Wheel{
   }
 
   move(){
-    if(this.yHit){
-      // print(this.yHit);
-      this.ySpeed += -this.GRAV;
-    }
-    else{
-      this.ySpeed += this.GRAV;
-    }
+    // if(this.yHit){
+    //   print(this.yHit);
+    //   this.ySpeed += -this.GRAV;
+    // }
+    // else{
+    //   this.ySpeed += this.GRAV;
+    // }
 
     if(keyIsDown(LEFT_ARROW)){
       latestKeyPressed = 1;
       if(this.xHitBehind){
         this.y = rectHeight;
       }
+      // this.y = rectHeight;
+
       // this.xSpeed = -5;
       this.xSpeed -= this.xAccel;
     }
@@ -158,9 +169,16 @@ class Wheel{
       if(this.xHitInFront){
         this.y = rectHeight;
       }
+      // this.y = rectHeight;
+
       // this.xSpeed = 5;
       this.xSpeed += this.xAccel;
     }
+
+    else if(keyIsDown(32)){
+      this.ySpeed += -this.GRAV;
+    }
+    
     else{
       if(this.xSpeed > 0 && latestKeyPressed === 2){
         this.xSpeed -= this.xAccel;
@@ -174,6 +192,7 @@ class Wheel{
       // this.xSpeed = 0;
     }
     if(!this.yHit){
+      this.ySpeed += this.GRAV;
       this.y += this.ySpeed;
     }
     this.x += this.xSpeed;
