@@ -16,8 +16,6 @@ let wheelDiameter = 30;
 let rectangles = [];
 let xOff;
 let rectHeight;
-let latestKeyPressed;
-
 
 // function preload(){
 //   biker = loadImage("assets/spr_bike2man_0.png");
@@ -40,7 +38,7 @@ function generateTerrain(){
     // rectHeight = height + rectY;
     // rect(rectX,height,rectSize,rectY);
     // fw.collision(rectX,height + rectY,rectSize,rectY * -1);
-    xOff += 0.001;
+    xOff += 0.01;
   }
   // updateTerrain();
   // start += 0.004;
@@ -94,7 +92,6 @@ class Wheel{
     this.y = y_;
     this.xSpeed = 0;
     this.ySpeed = 0;
-    this.xAccel = 0.1;
     this.GRAV = 0.05;
     this.yHit = false;
     this.yHitInFront = false;
@@ -110,8 +107,6 @@ class Wheel{
     this.disableGrav = collideRectCircle(x,y,w,h,this.x,this.y+this.ySpeed,wheelDiameter);
     this.xHitInFront = collideRectCircle(x,y,w,h,this.x + 1,this.y,wheelDiameter);
     this.xHitBehind = collideRectCircle(x,y,w,h,this.x - 1,this.y,wheelDiameter);
-    this.yHitInFront = collideRectCircle(x,y,w,h,this.x + 2,this.y,wheelDiameter);
-    this.yHitBehind = collideRectCircle(x,y,w,h,this.x - 2,this.y,wheelDiameter);
     if(this.xHitBehind){
       print("collision");
     }
@@ -119,15 +114,8 @@ class Wheel{
     //   print(x,y,w,h,this.x,this.y,wheelDiameter);
     // }
 
-    // if(!this.yHitBehind){
-    //   this.xSpeed = -5;
-    // }
-    // if(!this.yHitInFront){
-    //   this.xSpeed = 5;
-    // }
-
     if(this.yHit){
-      this.ySpeed = -this.GRAV;
+      // this.ySpeed = -this.GRAV;
       this.y = y - wheelDiameter/2;
       print(this.yHit,this.xHitInFront,this.xHitBehind);
       return true;
@@ -146,32 +134,19 @@ class Wheel{
     }
 
     if(keyIsDown(LEFT_ARROW)){
-      latestKeyPressed = 1;
       if(this.xHitBehind){
         this.y = rectHeight;
       }
-      // this.xSpeed = -5;
-      this.xSpeed -= this.xAccel;
+      this.xSpeed = -1;
     }
     else if(keyIsDown(RIGHT_ARROW)){
-      latestKeyPressed = 2;
       if(this.xHitInFront){
         this.y = rectHeight;
       }
-      // this.xSpeed = 5;
-      this.xSpeed += this.xAccel;
+      this.xSpeed = 1;
     }
     else{
-      if(this.xSpeed > 0 && latestKeyPressed === 2){
-        this.xSpeed -= this.xAccel;
-      }
-      else if(this.xSpeed < 0 && latestKeyPressed === 1){
-        this.xSpeed += this.xAccel;
-      }
-      else{
-        this.xSpeed = 0;
-      }
-      // this.xSpeed = 0;
+      this.xSpeed = 0;
     }
     if(!this.yHit){
       this.y += this.ySpeed;
