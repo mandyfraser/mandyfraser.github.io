@@ -18,6 +18,7 @@ let rectHeight;
 let latestKeyPressed;
 let meteors = [];
 let currentMeteor;
+let meteorAlive;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -51,7 +52,7 @@ function updateTerrain(){
 }
 
 function draw() {
-  background(255);
+  background(230,43,55);
   // generateTerrain();
   // bw.move();
   // bw.display();
@@ -60,14 +61,21 @@ function draw() {
     currentMeteor = i;
     meteors[i].move();
     meteors[i].display();                     
-    if(meteors[i].isAlive() === false){
-      meteors.splice(i,1);
-      i--;
-    }
+    // if(meteors[i].isAlive() === false){
+    //   meteors.splice(i,1);
+    //   i--;
+    // }
+    
+    // if(meteorAlive === false){
+    //   meteors.splice(i,1);
+    //   i--;
+    // }
   }
   for(let i = 0; i < rectangles.length; i++){
     rectangles[i].wheelCollision();
-    rectangles[i].meteorCollision();
+    // rectangles[i].meteorCollision();
+    meteorAlive = rectangles[i].meteorCollision();
+
     // if(rectangles[i].collision()){
     //   // print("collision");
     // }
@@ -154,7 +162,7 @@ class Wheel{
       this.ySpeed = 0;
       // this.y = rectHeight - wheelDiameter/2;
       this.y = rectHeight - wheelDiameter/2;
-      print(this.y);
+      // print(this.y);
 
       return true;
     }
@@ -232,11 +240,15 @@ class Meteor{
     this.size = random(10,30);
     this.ySpeed = random(-1,1);
     this.xSpeed = random(-0.5,0.5);
-    this.GRAV = -0.02;
+    this.GRAV = 0.02;
+    this.noiseLoc = random(10);
   }
   collision(x,y,w,h){
     rectHeight = y;
     this.Hit = collideRectCircle(x,y,w,h,this.x,this.y+this.ySpeed,this.size);
+    if(this.hit){
+      return false;
+    }
   }
   move(){
     this.ySpeed += this.GRAV;
