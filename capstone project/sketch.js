@@ -5,7 +5,7 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
-let rectSize = 20;
+let rectSize = 1;
 let start = 0;
 let currentHeight;
 let x,y;
@@ -18,7 +18,8 @@ let rectHeight;
 let latestKeyPressed;
 let meteors = [];
 let currentMeteor;
-let meteorAlive;
+let wheelX,wheelY;
+let gameOver = false;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -29,6 +30,7 @@ function setup() {
 }
 
 function generateTerrain(){
+  stroke(136,66,66);
   xOff = start;
   for(let i = 0; i < width; i += rectSize){
     rectX = i;
@@ -38,33 +40,47 @@ function generateTerrain(){
     // rectHeight = height + rectY;
     // rect(rectX,height,rectSize,rectY);
     // fw.collision(rectX,height + rectY,rectSize,rectY * -1);
-    xOff += 0.01;
+    xOff += 0.001;
   }
   // updateTerrain();
   // start += 0.004;
 }
 
 function updateTerrain(){
-  rectangles.splice(0);
+  rectangles.splice(0,1);
   rectX = width - rectSize;
   rectY = -height + map(noise(xOff),0,1,height,0);
   rectangles.push(new Rectangle(rectX,height,rectSize,rectY,height + rectY, rectY * -1));
+  xOff += 0.001;
+  start += 0.004;
+  for(let i = 0; i < rectangles.length; i++){
+    rectangles[i].x -= rectSize;
+  }
 }
 
 function draw() {
   background(230,43,55);
+  stroke(123);
+  updateTerrain();
   // generateTerrain();
   // bw.move();
   // bw.display();
-  meteors.push(new Meteor(random(0,width),0-10));
+  if(frameCount % 2 === 0){
+    meteors.push(new Meteor(random(0,width),0-10));
+  }
+  // meteors.push(new Meteor(random(0,width),0-10));
   for(let i = 0; i < meteors.length; i++){
     currentMeteor = i;
+    // gameOver = meteors[i].collision();
+    if(frameCount % 7 === 0){
+      // print(meteors[i].collision());
+    }
     meteors[i].move();
     meteors[i].display();                     
-    // if(meteors[i].isAlive() === false){
-    //   meteors.splice(i,1);
-    //   i--;
-    // }
+    if(meteors[i].ifReachedTheGround() === true){
+      meteors.splice(i,1);
+      i--;
+    }
     
     // if(meteorAlive === false){
     //   meteors.splice(i,1);
@@ -73,8 +89,7 @@ function draw() {
   }
   for(let i = 0; i < rectangles.length; i++){
     rectangles[i].wheelCollision();
-    // rectangles[i].meteorCollision();
-    meteorAlive = rectangles[i].meteorCollision();
+    // meteorAlive = rectangles[i].meteorCollision();
 
     // if(rectangles[i].collision()){
     //   // print("collision");
@@ -83,7 +98,7 @@ function draw() {
   }
   fw.move();
   fw.display();
-  // print(meteors);
+  // print(gameOver);
 }
 
 class Rectangle{
@@ -97,9 +112,6 @@ class Rectangle{
   }
   wheelCollision(){
     return fw.collision(this.x,this.yCol,this.w,this.hCol);
-  }
-  meteorCollision(){
-    return meteors[currentMeteor].collision(this.x,this.yCol,this.w,this.hCol);
   }
   // xCollision(){
   //   return this.yCol;
@@ -116,8 +128,8 @@ class Wheel{
     this.y = y_;
     this.xSpeed = 0;
     this.ySpeed = 0;
-    this.xAccel = 0.1;
-    this.yAccel = -0.2;
+    this.xAccel = 0.3;
+    this.yAccel = -0.4;
     this.GRAV = 0.1;
     this.yHit = false;
     this.yHitInFront = false;
@@ -224,6 +236,8 @@ class Wheel{
     }
     this.x += this.xSpeed;
     // print(this.ySpeed);
+    wheelX = this.x;
+    wheelY = this.y;
   }
 
   display(){
@@ -242,11 +256,14 @@ class Meteor{
     this.xSpeed = random(-0.5,0.5);
     this.GRAV = 0.02;
     this.noiseLoc = random(10);
+    this.hit = false;
   }
-  collision(x,y,w,h){
-    rectHeight = y;
-    this.Hit = collideRectCircle(x,y,w,h,this.x,this.y+this.ySpeed,this.size);
+  collision(){
+    this.hit = collideCircleCircle(this.x,this.y,this.size,wheelX,wheelY,wheelDiameter);
     if(this.hit){
+      return true;
+    }
+    else{
       return false;
     }
   }
@@ -256,12 +273,12 @@ class Meteor{
     this.noiseLoc += 0.01;
     this.y += this.ySpeed;
   }
-  isAlive(){
-    if(this.hit){
-      return false;
+  ifReachedTheGround(){
+    if(this.y >= height){
+      return true;
     }
     else{
-      return true;
+      return false;
     }
   }
   display(){
