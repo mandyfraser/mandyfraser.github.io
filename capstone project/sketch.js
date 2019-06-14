@@ -8,8 +8,6 @@
 let rectSize = 1;
 let start = 0;
 let currentHeight;
-let x,y;
-let b;
 let rectX,rectY;
 let wheelDiameter = 30;
 let rectangles = [];
@@ -35,15 +33,9 @@ function generateTerrain(){
   for(let i = 0; i < width; i += rectSize){
     rectX = i;
     rectY = -height + map(noise(xOff),0,1,height,0);
-    // fill(x+5,x+25,x*2);
     rectangles.push(new Rectangle(rectX,height,rectSize,rectY,height + rectY, rectY * -1));
-    // rectHeight = height + rectY;
-    // rect(rectX,height,rectSize,rectY);
-    // fw.collision(rectX,height + rectY,rectSize,rectY * -1);
     xOff += 0.001;
   }
-  // updateTerrain();
-  // start += 0.004;
 }
 
 function updateTerrain(){
@@ -54,7 +46,7 @@ function updateTerrain(){
   xOff += 0.001;
   start += 0.004;
   for(let i = 0; i < rectangles.length; i++){
-    rectangles[i].x -= rectSize;
+    rectangles[i].x -= rectSize*2;
   }
 }
 
@@ -62,38 +54,24 @@ function draw() {
   background(230,43,55);
   stroke(123);
   updateTerrain();
-  // generateTerrain();
-  // bw.move();
-  // bw.display();
   if(frameCount % 2 === 0){
     meteors.push(new Meteor(random(0,width),0-10));
   }
-  // meteors.push(new Meteor(random(0,width),0-10));
   for(let i = 0; i < meteors.length; i++){
     currentMeteor = i;
     // gameOver = meteors[i].collision();
-    if(frameCount % 7 === 0){
-      // print(meteors[i].collision());
-    }
+    // if(frameCount % 7 === 0){
+    //   // print(meteors[i].collision());
+    // }
     meteors[i].move();
     meteors[i].display();                     
     if(meteors[i].ifReachedTheGround() === true){
       meteors.splice(i,1);
       i--;
     }
-    
-    // if(meteorAlive === false){
-    //   meteors.splice(i,1);
-    //   i--;
-    // }
   }
   for(let i = 0; i < rectangles.length; i++){
     rectangles[i].wheelCollision();
-    // meteorAlive = rectangles[i].meteorCollision();
-
-    // if(rectangles[i].collision()){
-    //   // print("collision");
-    // }
     rectangles[i].display();
   }
   fw.move();
@@ -113,9 +91,6 @@ class Rectangle{
   wheelCollision(){
     return fw.collision(this.x,this.yCol,this.w,this.hCol);
   }
-  // xCollision(){
-  //   return this.yCol;
-  // }
   display(){
     fill(255);
     rect(this.x, this.y, this.w, this.h);
@@ -147,50 +122,15 @@ class Wheel{
     this.xHitBehind = collideRectCircle(x,y,w,h,this.x - 1,this.y,wheelDiameter);
     this.yHitInFront = collideRectCircle(x,y,w,h,this.x + 2,this.y,wheelDiameter);
     this.yHitBehind = collideRectCircle(x,y,w,h,this.x - 2,this.y,wheelDiameter);
-    // if(this.xHitBehind){
-    //   print("collision");
-    // }
-    // if(frameCount % 6 === 0){
-    //   print(x,y,w,h,this.x,this.y,wheelDiameter);
-    // }
-
-    // if(!this.yHitBehind){
-    //   this.xSpeed = -5;
-    // }
-    // if(!this.yHitInFront){
-    //   this.xSpeed = 5;
-    // }
 
     if(this.yHit){
-      // this.ySpeed = -this.GRAV;
-      // this.y = y - wheelDiameter/2;
-
-      // this.y = rectHeight;
-
-      // this.ySpeed = 0;
-      // this.y = y - (this.y - y);
-      // print(y - (this.y-y),this.ySpeed,this.yHit,this.xHitInFront,this.xHitBehind);
-
       this.ySpeed = 0;
-      // this.y = rectHeight - wheelDiameter/2;
       this.y = rectHeight - wheelDiameter/2;
-      // print(this.y);
-
       return true;
     }
-
-    //print(this.hit);
   }
 
   move(){
-    // if(this.yHit){
-    //   print(this.yHit);
-    //   this.ySpeed += -this.GRAV;
-    // }
-    // else{
-    //   this.ySpeed += this.GRAV;
-    // }
-
     if(keyIsDown(32)){
       this.ySpeed += this.yAccel;
     }
@@ -200,10 +140,6 @@ class Wheel{
       if(this.xHitBehind && latestKeyPressed){
         this.y = rectHeight;
       }
-
-      // this.y = rectHeight - wheelDiameter/2;
-
-      // this.xSpeed = -5;
       this.xSpeed -= this.xAccel;
     }
     else if(keyIsDown(RIGHT_ARROW)){
@@ -211,10 +147,6 @@ class Wheel{
       if(this.xHitInFront){
         this.y = rectHeight;
       }
-
-      // this.y = rectHeight;
-
-      // this.xSpeed = 5;
       this.xSpeed += this.xAccel;
     }
     
@@ -228,14 +160,12 @@ class Wheel{
       else{
         this.xSpeed = 0;
       }
-      // this.xSpeed = 0;
     }
     if(!this.yHit){
       this.ySpeed += this.GRAV;
       this.y += this.ySpeed;
     }
     this.x += this.xSpeed;
-    // print(this.ySpeed);
     wheelX = this.x;
     wheelY = this.y;
   }
