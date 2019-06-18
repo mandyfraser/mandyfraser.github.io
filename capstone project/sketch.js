@@ -1,5 +1,5 @@
-// Project Title
-// Your Name
+// Snowball Game
+// Mandy Fraser
 // Date
 //
 // Extra for Experts:
@@ -44,39 +44,54 @@ function updateTerrain(){
   rectY = -height + map(noise(xOff),0,1,height,0);
   rectangles.push(new Rectangle(rectX,height,rectSize,rectY,height + rectY, rectY * -1));
   xOff += 0.001;
-  start += 0.004;
+  start += 0.001;
   for(let i = 0; i < rectangles.length; i++){
     rectangles[i].x -= rectSize*2;
   }
 }
 
 function draw() {
-  background(230,43,55);
-  stroke(123);
-  updateTerrain();
-  if(frameCount % 2 === 0){
-    meteors.push(new Meteor(random(0,width),0-10));
-  }
-  for(let i = 0; i < meteors.length; i++){
-    currentMeteor = i;
-    // gameOver = meteors[i].collision();
-    // if(frameCount % 7 === 0){
-    //   // print(meteors[i].collision());
-    // }
-    meteors[i].move();
-    meteors[i].display();                     
-    if(meteors[i].ifReachedTheGround() === true){
-      meteors.splice(i,1);
-      i--;
+  if(gameOver){
+    background(255);
+    fill(0);
+    text("Game Over",width/2,height/2);
+    text("Press the 'enter' key to restart",width/2,height/2 + (height/3));
+    meteors.splice(0,meteors.length);
+    if(keyIsDown(ENTER)){
+      fw.size = wheelDiameter;
+      gameOver = false;
     }
   }
-  for(let i = 0; i < rectangles.length; i++){
-    rectangles[i].wheelCollision();
-    rectangles[i].display();
-  }
-  fw.move();
-  fw.display();
+  else{
+    background(230,43,55);
+    stroke(123);
+    updateTerrain();
+    if(frameCount % 2 === 0){
+      meteors.push(new Meteor(random(0,width),0-10));
+    }
+    for(let i = 0; i < meteors.length; i++){
+      currentMeteor = i;
+      // gameOver = meteors[i].collision();
+      if(meteors[i].collision()){
+        // print(meteors[i].collision());
+        gameOver = true;
+        print(gameOver);
+      }
+      meteors[i].move();
+      meteors[i].display();                     
+      if(meteors[i].ifReachedTheGround() === true){
+        meteors.splice(i,1);
+        i--;
+      }
+    }
+    for(let i = 0; i < rectangles.length; i++){
+      rectangles[i].wheelCollision();
+      rectangles[i].display();
+    }
+    fw.move();
+    fw.display();
   // print(gameOver);
+  }
 }
 
 class Rectangle{
@@ -107,6 +122,8 @@ class Wheel{
     this.yAccel = -0.4;
     this.GRAV = 0.1;
     this.yHit = false;
+    this.size = wheelDiameter;
+    this.sizeIncrease = 0.01;
     this.yHitInFront = false;
     this.yHitBehind = false;
     this.xHitInFront = false;
@@ -126,6 +143,9 @@ class Wheel{
     if(this.yHit){
       this.ySpeed = 0;
       this.y = rectHeight - wheelDiameter/2;
+      if(keyIsDown(LEFT_ARROW) || keyIsDown(RIGHT_ARROW)){
+        this.size += this.sizeIncrease;
+      }
       return true;
     }
   }
@@ -140,6 +160,9 @@ class Wheel{
       if(this.xHitBehind && latestKeyPressed){
         this.y = rectHeight;
       }
+      // if(this.yHit){
+      //   this.size += this.sizeIncrease;
+      // }
       this.xSpeed -= this.xAccel;
     }
     else if(keyIsDown(RIGHT_ARROW)){
@@ -147,6 +170,9 @@ class Wheel{
       if(this.xHitInFront){
         this.y = rectHeight;
       }
+      // if(this.yHit){
+      //   this.size += this.sizeIncrease;
+      // }
       this.xSpeed += this.xAccel;
     }
     
@@ -172,7 +198,7 @@ class Wheel{
 
   display(){
     ellipseMode(CENTER);
-    ellipse(this.x, this.y, wheelDiameter);
+    ellipse(this.x, this.y, this.size);
   }
 }
 
@@ -181,7 +207,7 @@ class Meteor{
     this.x = x_;
     this.y = y_;
     this.colour = color(0,100,map(y_,0,rectHeight,0,100));
-    this.size = random(10,30);
+    this.size = 10;
     this.ySpeed = random(-1,1);
     this.xSpeed = random(-0.5,0.5);
     this.GRAV = 0.02;
