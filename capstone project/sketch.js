@@ -7,14 +7,14 @@
 
 let rectSize = 1;
 let rectX,rectY;
-let wheelDiameter = 30;
+let snowballDiameter = 30;
 let rectangles = [];
 let xOff;
 let rectHeight;
 let latestKeyPressed;
 let meteors = [];
 let currentMeteor;
-let wheelX,wheelY;
+let snowballX,snowballY;
 let gameOver = false;
 let gameStart = false;
 let secondsElapsed = 0;
@@ -25,7 +25,7 @@ function setup() {
   colorMode(HSB);
   textAlign(CENTER);
   textFont("Georgia");
-  fw = new Wheel(width/2,0);
+  fw = new Snowball(width/2,0);
   generateTerrain();
 }
 
@@ -78,7 +78,7 @@ function draw() {
     text("Press the 'escape' key to go back to main menu",width/2,height/2 + (height/3));
     meteors.splice(0,meteors.length);
     if(keyIsDown(ESCAPE)){
-      fw.size = wheelDiameter;
+      fw.size = snowballDiameter;
       fw.ySpeed = 0;
       secondsElapsed = 0;
       minutesElapsed = 0;
@@ -108,7 +108,7 @@ function draw() {
       }
     }
     for(let i = 0; i < rectangles.length; i++){
-      rectangles[i].wheelCollision();                     //check if the snowball is colliding with any rectangle in the terrain
+      rectangles[i].snowballCollision();                     //check if the snowball is colliding with any rectangle in the terrain
       rectangles[i].display();
     }
     fw.move();
@@ -136,7 +136,7 @@ class Rectangle{
     this.yCol = yCol_;
     this.hCol = hCol_;
   }
-  wheelCollision(){
+  snowballCollision(){                                                 //detects if the snowball has made contact with the current rectangle
     return fw.collision(this.x,this.yCol,this.w,this.hCol);
   }
   display(){
@@ -145,7 +145,7 @@ class Rectangle{
   }
 }
 
-class Wheel{
+class Snowball{
   constructor(x_,y_){
     this.x = x_;
     this.y = y_;
@@ -155,7 +155,7 @@ class Wheel{
     this.yAccel = -0.4;        //how fast the snowball flies
     this.GRAV = 0.1;
     this.yHit = false;
-    this.size = wheelDiameter;
+    this.size = snowballDiameter;
     this.sizeIncrease = 0.02;
     this.xHitInFront = false;
     this.xHitBehind = false;
@@ -210,13 +210,13 @@ class Wheel{
         this.xSpeed = 0;
       }
     }
-    if(!this.yHit){
+    if(!this.yHit){                        //make the snowball fall down
       this.ySpeed += this.GRAV;
       this.y += this.ySpeed;
     }
     this.x += this.xSpeed;
-    wheelX = this.x;
-    wheelY = this.y;
+    snowballX = this.x;
+    snowballY = this.y;
   }
 
   display(){
@@ -238,7 +238,7 @@ class Meteor{
     this.hit = false;
   }
   collision(){
-    this.hit = collideCircleCircle(this.x,this.y,this.size,wheelX,wheelY,wheelDiameter);   //detects if the meteors are making contact with the snowball
+    this.hit = collideCircleCircle(this.x,this.y,this.size,snowballX,snowballY,snowballDiameter);   //detects if the meteors are making contact with the snowball
     if(this.hit){
       return true;
     }
