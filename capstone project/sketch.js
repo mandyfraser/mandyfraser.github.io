@@ -1,9 +1,6 @@
 // Snowball Game
 // Mandy Fraser
-// Date
-//
-// Extra for Experts:
-// - describe what you did to take this project "above and beyond"
+// 19/06/2019
 
 let rectSize = 1;
 let rectX,rectY;
