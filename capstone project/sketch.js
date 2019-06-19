@@ -6,8 +6,6 @@
 // - describe what you did to take this project "above and beyond"
 
 let rectSize = 1;
-let start = 0;
-let currentHeight;
 let rectX,rectY;
 let wheelDiameter = 30;
 let rectangles = [];
@@ -18,10 +16,14 @@ let meteors = [];
 let currentMeteor;
 let wheelX,wheelY;
 let gameOver = false;
+let gameStart = false;
+let timeElapsed = 0;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   colorMode(HSB);
+  textAlign(CENTER);
+  textFont("Georgia");
   bw = new Wheel(0,0);
   fw = new Wheel(width/2,0);
   generateTerrain();
@@ -29,12 +31,12 @@ function setup() {
 
 function generateTerrain(){
   stroke(136,66,66);
-  xOff = start;
+  xOff = 0;
   for(let i = 0; i < width; i += rectSize){
     rectX = i;
     rectY = -height + map(noise(xOff),0,1,height,0);
     rectangles.push(new Rectangle(rectX,height,rectSize,rectY,height + rectY, rectY * -1));
-    xOff += 0.001;
+    xOff += 0.0015;
   }
 }
 
@@ -43,30 +45,46 @@ function updateTerrain(){
   rectX = width - rectSize;
   rectY = -height + map(noise(xOff),0,1,height,0);
   rectangles.push(new Rectangle(rectX,height,rectSize,rectY,height + rectY, rectY * -1));
-  xOff += 0.001;
-  start += 0.001;
+  xOff += 0.0015;
+  // start += 0.001;
   for(let i = 0; i < rectangles.length; i++){
     rectangles[i].x -= rectSize*2;
   }
 }
 
 function draw() {
-  if(gameOver){
-    background(255);
-    fill(0);
-    text("Game Over",width/2,height/2);
-    text("Press the 'enter' key to restart",width/2,height/2 + (height/3));
-    meteors.splice(0,meteors.length);
+  if(!gameStart){
+    background(230,43,55);
+    fill(255);
+    textSize(32);
+    text("Snowball Game",width/2,height/3);
+    textSize(18);
+    text("Press the 'enter' key to start", width/2, height/2 + (height/3));
     if(keyIsDown(ENTER)){
+      gameStart = true;
+    }
+  }
+  else if(gameOver){
+    background(230,43,55);
+    fill(255);
+    textSize(32);
+    text("Game Over",width/2,height/2);
+    textSize(18);
+    text("Press the 'escape' key to go back to main menu",width/2,height/2 + (height/3));
+    meteors.splice(0,meteors.length);
+    if(keyIsDown(ESCAPE)){
       fw.size = wheelDiameter;
+      fw.ySpeed = 0;
+      timeElapsed = 0;
       gameOver = false;
+      gameStart = false;
     }
   }
   else{
     background(230,43,55);
     stroke(123);
     updateTerrain();
-    if(frameCount % 2 === 0){
+    if(frameCount % 2 === 0 && frameCount > 300){
       meteors.push(new Meteor(random(0,width),0-10));
     }
     for(let i = 0; i < meteors.length; i++){
