@@ -17,14 +17,14 @@ let currentMeteor;
 let wheelX,wheelY;
 let gameOver = false;
 let gameStart = false;
-let timeElapsed = 0;
+let secondsElapsed = 0;
+let minutesElapsed = 0;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   colorMode(HSB);
   textAlign(CENTER);
   textFont("Georgia");
-  bw = new Wheel(0,0);
   fw = new Wheel(width/2,0);
   generateTerrain();
 }
@@ -35,80 +35,95 @@ function generateTerrain(){
   for(let i = 0; i < width; i += rectSize){
     rectX = i;
     rectY = -height + map(noise(xOff),0,1,height,0);
-    rectangles.push(new Rectangle(rectX,height,rectSize,rectY,height + rectY, rectY * -1));
+    rectangles.push(new Rectangle(rectX,height,rectSize,rectY,height + rectY, rectY * -1));   //create rectangle objects that make up the terrain
     xOff += 0.0015;
   }
 }
 
-function updateTerrain(){
-  rectangles.splice(0,1);
+function updateTerrain(){                                                                     //make the terrain move from left to right
+  rectangles.splice(0,1);                                                                     //by removing rectangles and adding new ones
   rectX = width - rectSize;
   rectY = -height + map(noise(xOff),0,1,height,0);
   rectangles.push(new Rectangle(rectX,height,rectSize,rectY,height + rectY, rectY * -1));
   xOff += 0.0015;
-  // start += 0.001;
   for(let i = 0; i < rectangles.length; i++){
     rectangles[i].x -= rectSize*2;
   }
 }
 
 function draw() {
-  if(!gameStart){
+  if(!gameStart){                                                                            //main menu
     background(230,43,55);
     fill(255);
-    textSize(32);
+    textSize(50);
     text("Snowball Game",width/2,height/3);
     textSize(18);
+    text("Use the arrow keys to move the snowball and dodge meteors",width/2,height/2);
+    text("Use the spacebar to fly",width/2,height/2 + 40);
+    text("As you roll along the terrain, the snowball will get bigger",width/2,height/2 + 80);
+    textSize(25);
     text("Press the 'enter' key to start", width/2, height/2 + (height/3));
     if(keyIsDown(ENTER)){
       gameStart = true;
     }
   }
-  else if(gameOver){
+  else if(gameOver){                                                                       //game over screen
     background(230,43,55);
     fill(255);
-    textSize(32);
-    text("Game Over",width/2,height/2);
+    textSize(50);
+    text("Game Over",width/2,height/3);
     textSize(18);
+    text("Your time" + " " + "-" + " " + minutesElapsed + ":" + secondsElapsed, width/2, height/2);
+    textSize(25);
     text("Press the 'escape' key to go back to main menu",width/2,height/2 + (height/3));
     meteors.splice(0,meteors.length);
     if(keyIsDown(ESCAPE)){
       fw.size = wheelDiameter;
       fw.ySpeed = 0;
-      timeElapsed = 0;
+      secondsElapsed = 0;
+      minutesElapsed = 0;
       gameOver = false;
       gameStart = false;
     }
   }
-  else{
+  else{                                                                                   //while the user is playing the game
     background(230,43,55);
     stroke(123);
     updateTerrain();
-    if(frameCount % 2 === 0 && frameCount > 300){
-      meteors.push(new Meteor(random(0,width),0-10));
+
+    if(frameCount % 2 === 0 && frameCount > 300){               //create meteors after a certain period of time so the snowball can't get hit immediately at the start
+      meteors.push(new Meteor(random(0,width),0-10));           //of the game and there aren't too many meteors
     }
+
     for(let i = 0; i < meteors.length; i++){
       currentMeteor = i;
-      // gameOver = meteors[i].collision();
       if(meteors[i].collision()){
-        // print(meteors[i].collision());
         gameOver = true;
-        print(gameOver);
       }
       meteors[i].move();
       meteors[i].display();                     
-      if(meteors[i].ifReachedTheGround() === true){
+      if(meteors[i].ifReachedTheGround() === true){         //destroys meteors if they have reached the bottom of the screen
         meteors.splice(i,1);
         i--;
       }
     }
     for(let i = 0; i < rectangles.length; i++){
-      rectangles[i].wheelCollision();
+      rectangles[i].wheelCollision();                     //check if the snowball is colliding with any rectangle in the terrain
       rectangles[i].display();
     }
     fw.move();
     fw.display();
-  // print(gameOver);
+
+    fill(255);
+    textSize(50);
+    if(secondsElapsed === 60){                                                       //keep track of the amount of time the user has been playing
+      minutesElapsed += 1;
+      secondsElapsed = 0;
+    }
+    if(frameCount % 60 === 0){
+      secondsElapsed += 1;
+    }
+    text(minutesElapsed + ":" + secondsElapsed, width - 75, 50);
   }
 }
 
@@ -137,13 +152,11 @@ class Wheel{
     this.xSpeed = 0;
     this.ySpeed = 0;
     this.xAccel = 0.3;
-    this.yAccel = -0.4;
+    this.yAccel = -0.4;        //how fast the snowball flies
     this.GRAV = 0.1;
     this.yHit = false;
     this.size = wheelDiameter;
-    this.sizeIncrease = 0.01;
-    this.yHitInFront = false;
-    this.yHitBehind = false;
+    this.sizeIncrease = 0.02;
     this.xHitInFront = false;
     this.xHitBehind = false;
     this.disableGrav = false;
@@ -151,17 +164,15 @@ class Wheel{
 
   collision(x,y,w,h){
     rectHeight = y;
-    this.yHit = collideRectCircle(x,y,w,h,this.x,this.y+this.ySpeed,wheelDiameter);
-    this.disableGrav = collideRectCircle(x,y,w,h,this.x,this.y+this.ySpeed,wheelDiameter);
-    this.xHitInFront = collideRectCircle(x,y,w,h,this.x + 1,this.y,wheelDiameter);
-    this.xHitBehind = collideRectCircle(x,y,w,h,this.x - 1,this.y,wheelDiameter);
-    this.yHitInFront = collideRectCircle(x,y,w,h,this.x + 2,this.y,wheelDiameter);
-    this.yHitBehind = collideRectCircle(x,y,w,h,this.x - 2,this.y,wheelDiameter);
+    this.yHit = collideRectCircle(x,y,w,h,this.x,this.y+this.ySpeed,this.size);           //detects if the snowball is making contact with the terrain
+    this.disableGrav = collideRectCircle(x,y,w,h,this.x,this.y+this.ySpeed,this.size);
+    this.xHitInFront = collideRectCircle(x,y,w,h,this.x + 1,this.y,this.size);
+    this.xHitBehind = collideRectCircle(x,y,w,h,this.x - 1,this.y,this.size);
 
     if(this.yHit){
       this.ySpeed = 0;
-      this.y = rectHeight - wheelDiameter/2;
-      if(keyIsDown(LEFT_ARROW) || keyIsDown(RIGHT_ARROW)){
+      this.y = rectHeight - this.size/2;
+      if(keyIsDown(LEFT_ARROW) || keyIsDown(RIGHT_ARROW)){          //makes the snowball get bigger as it's rolling along the terrain
         this.size += this.sizeIncrease;
       }
       return true;
@@ -178,9 +189,6 @@ class Wheel{
       if(this.xHitBehind && latestKeyPressed){
         this.y = rectHeight;
       }
-      // if(this.yHit){
-      //   this.size += this.sizeIncrease;
-      // }
       this.xSpeed -= this.xAccel;
     }
     else if(keyIsDown(RIGHT_ARROW)){
@@ -188,13 +196,10 @@ class Wheel{
       if(this.xHitInFront){
         this.y = rectHeight;
       }
-      // if(this.yHit){
-      //   this.size += this.sizeIncrease;
-      // }
       this.xSpeed += this.xAccel;
     }
     
-    else{
+    else{                                                    //slow the snowball down
       if(this.xSpeed > 0 && latestKeyPressed === 2){
         this.xSpeed -= this.xAccel;
       }
@@ -233,7 +238,7 @@ class Meteor{
     this.hit = false;
   }
   collision(){
-    this.hit = collideCircleCircle(this.x,this.y,this.size,wheelX,wheelY,wheelDiameter);
+    this.hit = collideCircleCircle(this.x,this.y,this.size,wheelX,wheelY,wheelDiameter);   //detects if the meteors are making contact with the snowball
     if(this.hit){
       return true;
     }
@@ -247,7 +252,7 @@ class Meteor{
     this.noiseLoc += 0.01;
     this.y += this.ySpeed;
   }
-  ifReachedTheGround(){
+  ifReachedTheGround(){              //detects if the meteors have reached the bottom of the screen
     if(this.y >= height){
       return true;
     }
